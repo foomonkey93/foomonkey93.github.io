@@ -42,7 +42,7 @@
             <td> {{ critter.location }}</td>
             <td>{{critter.size}} </td>
 
-            <td> <img v-show="critter.type=='fish'" :src="critter.size.replace(' ','_').replace('(','').replace(')','')+'.png'" style="max-height:100px"></td>
+            <td> <img v-show="critter.type=='fish'" :src="critter.size.replace(' ','__').replace('(','').replace(')','')+'.png'" style="max-height:100px"></td>
           </tr>
         </table>
       </div>
