@@ -1,1 +1,14 @@
-Hello World
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<html>
+<div id="app">
+  {{ message }}
+</div>
+</html>
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>
