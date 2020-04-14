@@ -2,15 +2,18 @@
 <script src="critters.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
   integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
 
 <body>
   <div id="app">
-    <div >
+    <div>
       <div class="w-100">
         <div style="background-color: white;" class="sticky">
           <div class="btn-group btn-group-toggle sticky">
@@ -26,11 +29,13 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th class="stickyheader">name</th>
+              <th class="stickyheader" @click="setSort('name')">name</th>
               <th class="stickyheader">image</th>
-              <th class="stickyheader">location</th>
-
-              <th class="stickyheader">size</th>
+              <th class="stickyheader" @click="setSort('location')">
+                location</th>
+              <th class="stickyheader" @click="setSort('price')">price(-20%)
+              </th>
+              <th class="stickyheader" @click="setSort('size')">size</th>
               <th class="stickyheader">shadow</th>
 
             </tr>
@@ -40,13 +45,16 @@
             <td> {{ critter.name }}</td>
             <td> <img :src="critter.url"></td>
             <td> {{ critter.location }}</td>
+            <td> {{ critter.price }} ({{critter.price*0.80}})</td>
             <td>{{critter.size}} </td>
 
-            <td> <img v-show="critter.type=='fish'" :src="critter.size.replace(' ','__').replace('(','').replace(')','')+'.png'" style="max-height:100px"></td>
+            <td> <img v-if="critter.type=='fish'"
+                :src="critter.size.replace(' ','__').replace('(','').replace(')','')+'.png'" style="max-height:100px">
+            </td>
           </tr>
         </table>
       </div>
-      
+
     </div>
 
   </div>
@@ -60,7 +68,9 @@
     data: {
       message: 'Hello Vue!',
       critters: [],
-      filterBy: 'all'
+      filterBy: 'all',
+      currentSort: 'name',
+      asc: true
     },
     mounted: function () {
       this.critters = critterData.critters;
@@ -69,22 +79,48 @@
       tableSort: function () {
         var tempTable = [];
         if (this.filterBy == 'all') {
-          return this.critters;
+          tempTable=this.critters;
         }
         for (var i = 0; i < this.critters.length; i++) {
           if (this.critters[i].type === this.filterBy) {
             tempTable.push(this.critters[i])
           }
         }
+        tempTable = this.sortBy(tempTable)
+        console.log(tempTable)
         return tempTable;
 
+      },
+      boxIt: function (base) {
+        return base * 0.80;
       }
     },
     methods: {
-      openModal:function(id){
-        $('#'+id).modal('toggle')
+      openModal: function (id) {
+        $('#' + id).modal('toggle')
 
-      }
+      },
+      setSort(field){
+        if(field===this.currentSort){
+          this.asc=!this.asc;
+        }
+        else{
+          asc=true;
+        }
+        this.currentSort=field;
+      },
+      sortBy(arr) {
+        return arr.sort((a, b) => {
+          let modifier = 1;
+          if (!this.asc) modifier = -1;
+
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+          return 0;
+        });
+      },
+    
+
     }
   })
 </script>
@@ -104,7 +140,7 @@
     background-color: silver;
   }
 
-  
-
-
+  td {
+    word-break: break-all;
+  }
 </style>
