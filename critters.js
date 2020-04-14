@@ -1,4 +1,6 @@
-var critters=[
+var critterData =new Vue({
+     data: {
+ critters:[
     {
         "hours": [
             0,
@@ -7073,3 +7075,5 @@ var critters=[
         "type": "bugs"
     }
 ]
+     }                     
+     })
