@@ -1,4 +1,4 @@
-[
+var critters=[
     {
         "hours": [
             0,
