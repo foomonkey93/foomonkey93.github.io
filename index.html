@@ -13,7 +13,10 @@ var app = new Vue({
   el: '#app',
   data: {
     message: 'Hello Vue!'
-    critters:this.critterData.critters  
+    critters:[] 
+  },
+  mounted:function(){
+    this.critters=critterData.critters
   }
 })
 </script>
