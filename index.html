@@ -1,23 +1,87 @@
-
-
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="critters.js" ></script>
+<script src="critters.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-  <body>
-<div id="app">
-  {{ critters }}
-</div>
-  </body>
+
+<body>
+  <div id="app">
+    <div class="row">
+      <div class="col-sm-12">
+        <div style="background-color: white;" class="sticky">
+          <div class="btn-group btn-group-toggle sticky">
+            <button @click="filterBy='all'" class="btn btn-primary sticky"
+              :class="{active: filterBy=='all'}">Both</button>
+            <button @click="filterBy='fish'" class="btn btn-primary sticky"
+              :class="{active: filterBy=='fish'}">Fish</button>
+            <button @click="filterBy='bugs'" class="btn btn-primary sticky"
+              :class="{active: filterBy=='bugs'}">Bugs</button>
+          </div>
+        </div>
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th class="stickyheader">name</th>
+              <th class="stickyheader">image</th>
+            </tr>
+          </thead>
+          <tr v-for="critter in tableSort">
+
+            <td> {{ critter.name }}</td>
+            <td> <img :src="critter.url"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
 
 <script>
-var app = new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello Vue!',
-    critters:[],
-  },
-  mounted:function(){
-    this.critters=critterData.critters
-  }
-})
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Vue!',
+      critters: [],
+      filterBy: 'all'
+    },
+    mounted: function () {
+      this.critters = critterData.critters;
+    },
+    computed: {
+      tableSort: function () {
+        var tempTable = [];
+        if (this.filterBy == 'all') {
+          return this.critters;
+        }
+        for (var i = 0; i < this.critters.length; i++) {
+          if (this.critters[i].type === this.filterBy) {
+            tempTable.push(this.critters[i])
+          }
+        }
+        return tempTable;
+
+      }
+    },
+    methods: {
+     
+    }
+  })
 </script>
+<style>
+  .sticky {
+    position: -webkit-sticky;
+    /* Safari */
+    position: sticky;
+    top: 0;
+  }
+
+  .stickyheader {
+    position: -webkit-sticky;
+    /* Safari */
+    position: sticky;
+    top: 37;
+    background-color: silver;
+  }
+</style>
