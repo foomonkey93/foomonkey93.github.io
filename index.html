@@ -163,14 +163,41 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-             <div v-for="(value, month) in advancedMonth">
-                <button @click="advancedMonth[month]=!advancedMonth[month]"  class="btn" >{{month}}</button>
+          <div class="modal-body row">
+            <div class="col-sm-6">
+              <div v-for="(value, month) in advancedMonth">
 
-             </div>
+                <button class="col-sm-12" @click="advancedMonth[month]=!advancedMonth[month]" class="btn"
+                  :class="{'btn-success': advancedMonth[month],'btn-primary':!advancedMonth[month]}">{{month}}</button>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div v-for="(value, hour) in advancedHourAm">
+                    <button class="col-sm-12"  v-if="hour!=0" @click="advancedHourAm[hour]=!advancedHourAm[hour]" class="btn"
+                      :class="{'btn-success':advancedHourAm[hour],'btn-primary':!advancedHourAm[hour]}">{{hour}}
+                      am</button>
+                      <button v-if="hour==0" class="col-sm-12" @click="advancedHourAm[hour]=!advancedHourAm[hour]" class="btn"
+                      :class="{'btn-success':advancedHourAm[hour],'btn-primary':!advancedHourAm[hour]}">12
+                      am</button>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div v-for="(value, hour) in advancedHourPm">
+                    <button class="col-sm-12" v-if="hour!=0" @click="advancedHourPm[hour]=!advancedHourPm[hour]" class="btn"
+                      :class="{'btn-success': advancedHourPm[hour],'btn-primary':!advancedHourPm[hour]}">{{hour}}
+                      pm</button>
+                      <button class="col-sm-12" v-if="hour==0" @click="advancedHourPm[hour]=!advancedHourPm[hour]" class="btn"
+                      :class="{'btn-success': advancedHourPm[hour],'btn-primary':!advancedHourPm[hour]}">12
+                      pm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="buildFilter()">Filter</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -196,8 +223,9 @@
       toggleShadows: true,
       filterByMonth: [new Date().getMonth()],
       filterByHour: [new Date().getHours()],
-      advancedMonth:{"Jan":false,"Feb":false,"Mar":false,"Apr":false,"May":false,"Jun":false,"Jul":false,"Aug":false,"Sep":false,"Oct":false,"Nov":false,"Dec":false},
-      advancedHour:{},
+      advancedMonth: { "Jan": false, "Feb": false, "Mar": false, "Apr": false, "May": false, "Jun": false, "Jul": false, "Aug": false, "Sep": false, "Oct": false, "Nov": false, "Dec": false },
+      advancedHourAm: { 0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false },
+      advancedHourPm: { 0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false },
       currentSort: 'name',
       tabSelected: 'list',
       asc: true
@@ -237,6 +265,36 @@
       }
     },
     methods: {
+      buildFilter: function () {
+        this.filterByMonth = [];
+        for (var month in this.advancedMonth) {
+          var value = this.advancedMonth[month];
+          if (value) {
+            this.filterByMonth.push(this.getMonthFromString(month));
+          }
+        }
+        this.filterByHour = [];
+        for (var hour in this.advancedHourAm) {
+          var value = this.advancedHourAm[hour];
+          if (value) {
+            this.filterByHour.push(parseInt(hour));
+          }
+        }
+
+        for (var hour in this.advancedHourPm) {
+          var value = this.advancedHourPm[hour];
+          if (value) {
+            this.filterByHour.push(parseInt(hour)+12);
+          }
+        }
+      },
+      getMonthFromString: function (mon) {
+        var d = Date.parse(mon + "1, 2012");
+        if (!isNaN(d)) {
+          return new Date(d).getMonth();
+        }
+        return -1;
+      },
       filterByMonthCalc: function (critts, months) {
         var tempTable = [];
         if (months.length === 0) {
@@ -246,12 +304,24 @@
         for (var i = 0; i < critts.length; i++) {
           for (var j = 0; j < months.length; j++) {
             if (critts[i].northern.includes(months[j])) {
-              tempTable.push(critts[i]);
+              if (!tempTable.includes(critts[i]))
+                tempTable.push(critts[i]);
             }
           }
         }
 
+
+
         return tempTable
+      },
+      removeDups: function (names) {
+        let unique = {};
+        names.forEach(function (i) {
+          if (!unique[i]) {
+            unique[i] = true;
+          }
+        })
+        return Object.keys(unique);
       },
       filterByHoursCalc: function (critts, hours) {
         var tempTable = [];
@@ -262,7 +332,9 @@
         for (var i = 0; i < critts.length; i++) {
           for (var j = 0; j < hours.length; j++) {
             if (critts[i].hours.includes(hours[j])) {
-              tempTable.push(critts[i]);
+              if (!tempTable.includes(critts[i]))
+                tempTable.push(critts[i]);
+
             }
           }
         }
@@ -359,7 +431,6 @@
         var productiveOptions = this.calculateThatGoodShit(duringValidHours);
         return productiveOptions;
       },
-
       containsMonth(full, subset) {
         var duringValidMonths = new Set();
 
@@ -420,7 +491,7 @@
             //add 
             var tempLocation = location.replace(/ \(.*\)/, '')
             if (locationOptions.get(tempLocation) != undefined) {
-              var entries=Array.from(locationOptions.get(tempLocation).entries());
+              var entries = Array.from(locationOptions.get(tempLocation).entries());
               for (var i = 0; i < entries.length; i++) {
                 critters.add(entries[i][1])
               }
