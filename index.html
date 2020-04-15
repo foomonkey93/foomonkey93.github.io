@@ -23,6 +23,8 @@
               :class="{active: filterBy=='fish'}">Fish</button>
             <button @click="filterBy='bugs'" class="btn btn-primary sticky"
               :class="{active: filterBy=='bugs'}">Bugs</button>
+            <button @click="calculateBestRightNow()" class="btn btn-info sticky">Show Me the Money</button>
+
           </div>
         </div>
 
@@ -74,7 +76,6 @@
     },
     mounted: function () {
       this.critters = critterData.critters;
-      this.calculateBestLocation([3, 4], [16, 17, 18, 19, 20])
     },
     computed: {
       tableSort: function () {
@@ -108,6 +109,11 @@
           asc = true;
         }
         this.currentSort = field;
+      },
+      calculateBestRightNow: function () {
+        var d = new Date();
+        console.log(this.calculateBestLocation([d.getMonth()], [d.getHours()]));
+
       },
       sortBy(arr) {
         return arr.sort((a, b) => {
@@ -175,11 +181,12 @@
         var crit;
         for (let [location, critters] of locationOptions) {
           var obj = new LocationInformation();
-          obj.location=location;
+          obj.location = location;
           var count = critters.length;
           var sum = 0;
-          var sumPrice=0;
-          var sumCount=0;
+          var sumPrice = 0;
+          var weightedSum = 0;
+          var sumCount = 0;
           for (var i = 0; i < critters.length; i++) {
             crit = critters[i];
             obj.names.push(crit.name)
@@ -190,39 +197,47 @@
               obj.low = crit.price;
             }
             sum += crit.price;
+            if (crit.isRare) {
+              weightedSum += crit.price * 0.75;
+            }
+            else {
+              weightedSum += crit.price * 1;
+            }
             if (crit.type == 'fish') {
               obj.sizes.add(crit.size);
 
-              if(obj.sumPricePerSize.get(crit.size)!=undefined){
-                sumPrice=obj.sumPricePerSize.get(crit.size);
+              if (obj.sumPricePerSize.get(crit.size) != undefined) {
+                sumPrice = obj.sumPricePerSize.get(crit.size);
               }
-              else{
-                sumPrice=0;
+              else {
+                sumPrice = 0;
               }
-              sumPrice+= crit.price;
-              obj.sumPricePerSize.set(crit.size,sumPrice)
+              sumPrice += crit.price;
+              obj.sumPricePerSize.set(crit.size, sumPrice)
 
-              if(obj.countPerSize.get(crit.size)!=undefined){
-                sumCount=obj.countPerSize.get(crit.size);
+              if (obj.countPerSize.get(crit.size) != undefined) {
+                sumCount = obj.countPerSize.get(crit.size);
 
               }
-              else{
-                sumCount=0;
+              else {
+                sumCount = 0;
 
               }
 
               sumCount++;
-              obj.countPerSize.set(crit.size,sumCount)
+              obj.countPerSize.set(crit.size, sumCount)
             }
           }
           obj.averagePrice = sum / count;
+          obj.weightedAveragePrice = weightedSum / count;
+
 
           for (let [size, sum] of obj.sumPricePerSize) {
-            obj.averagePricePerSize.set(size,sum/obj.countPerSize.get(size))
+            obj.averagePricePerSize.set(size, sum / obj.countPerSize.get(size))
           }
 
           crunchedNumbers.push(obj);
-          
+
         }
 
         console.log(crunchedNumbers)
@@ -241,10 +256,12 @@
     this.averagePricePerSize = new Map();
     this.sumPricePerSize = new Map();
     this.countPerSize = new Map();
-    this.names=[];
+    this.names = [];
 
     this.location = '';
     this.averagePrice = 0;
+    this.weightedAveragePrice = 0;
+
   };
 
 </script>
