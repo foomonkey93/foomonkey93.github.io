@@ -551,13 +551,13 @@
               obj.countPerSize.set(crit.size, sumCount)
             }
           }
-          obj.averagePrice = sum / count;
-          obj.weightedAveragePrice = weightedSum / count;
+          obj.averagePrice = Math.ceil(sum / count);
+          obj.weightedAveragePrice = Math.ceil(weightedSum / count);
 
           obj.sizes = Array.from(obj.sizes)
 
           for (let [size, sum] of obj.sumPricePerSize) {
-            obj.averagePricePerSize.set(size, sum / obj.countPerSize.get(size))
+            obj.averagePricePerSize.set(size, Math.ceil(sum / obj.countPerSize.get(size)))
           }
 
           crunchedNumbers.push(obj);
