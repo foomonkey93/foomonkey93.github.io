@@ -182,6 +182,7 @@
           var sumCount=0;
           for (var i = 0; i < critters.length; i++) {
             crit = critters[i];
+            obj.names.push(crit.name)
             if (obj.high < crit.price) {
               obj.high = crit.price;
             }
@@ -190,23 +191,26 @@
             }
             sum += crit.price;
             if (crit.type == 'fish') {
-              obj.sizes.add = crit.size;
+              obj.sizes.add(crit.size);
 
               if(obj.sumPricePerSize.get(crit.size)!=undefined){
-                sumPrice=0;
+                sumPrice=obj.sumPricePerSize.get(crit.size);
               }
               else{
-                sumPrice=obj.sumPricePerSize.get(crit.size);
+                sumPrice=0;
               }
               sumPrice+= crit.price;
               obj.sumPricePerSize.set(crit.size,sumPrice)
 
               if(obj.countPerSize.get(crit.size)!=undefined){
-                sumCount=0;
+                sumCount=obj.countPerSize.get(crit.size);
+
               }
               else{
-                sumCount=obj.countPerSize.get(crit.size);
+                sumCount=0;
+
               }
+
               sumCount++;
               obj.countPerSize.set(crit.size,sumCount)
             }
@@ -237,6 +241,7 @@
     this.averagePricePerSize = new Map();
     this.sumPricePerSize = new Map();
     this.countPerSize = new Map();
+    this.names=[];
 
     this.location = '';
     this.averagePrice = 0;
