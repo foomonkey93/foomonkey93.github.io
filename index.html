@@ -14,8 +14,20 @@
 <body>
   <div id="app">
     <div>
-      <div class="w-100">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" href="#" @click="tabSelected='list'" :class="{active: tabSelected=='list'}">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" @click="tabSelected='money'" :class="{active: tabSelected=='money'}">Money
+            Making</a>
+        </li>
+      </ul>
+      <div class="w-100" v-show="tabSelected==='list'">
+
+
         <div style="background-color: white;" class="sticky">
+
           <div class="btn-group btn-group-toggle sticky">
             <button @click="filterBy='all'" class="btn btn-primary sticky"
               :class="{active: filterBy=='all'}">Both</button>
@@ -23,9 +35,41 @@
               :class="{active: filterBy=='fish'}">Fish</button>
             <button @click="filterBy='bugs'" class="btn btn-primary sticky"
               :class="{active: filterBy=='bugs'}">Bugs</button>
-            <button @click="calculateBestRightNow()" class="btn btn-info sticky">Show Me the Money</button>
+          </div>
+          <div class="btn-group btn-group-toggle sticky">
+            <button @click="filterBy2='all'" class="btn btn-primary sticky"
+              :class="{active: filterBy2=='all'}">All</button>
+            <button @click="filterBy2='rare'" class="btn btn-primary sticky"
+              :class="{active: filterBy2=='rare'}">Rare</button>
+            <button @click="filterBy2='notRare'" class="btn btn-primary sticky"
+              :class="{active: filterBy2=='notRare'}">Not
+              Rare</button>
+          </div>
+          <div class="btn-group btn-group-toggle sticky">
+            <button @click="filterByMonth=[];filterByHour=[]" class="btn btn-info sticky">All</button>
+            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[new Date().getHours()]"
+              class="btn btn-info sticky">Now</button>
+            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[new Date().getHours()+1]"
+              class="btn btn-info sticky">Hour+</button>
+            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[]"
+              class="btn btn-info sticky">Month</button>
+            <button @click="openModal('AdvancedDateTime')" class="btn btn-info sticky">Advanced</button>
+          </div>
+
+          <div class="btn-group btn-group-toggle sticky">
+            <button @click="filterBy3=0" class="btn btn-info sticky">0+</button>
+
+            <button @click="filterBy3=1000" class="btn btn-info sticky">1k+</button>
+            <button @click="calculateBestTimeFilter(); openModal('moneyCalcModal')" class="btn btn-info sticky"
+              data-toggle="tooltip" title="Not including rarity">Show Me the Money</button>
 
           </div>
+
+          <span class="sticky">Months: {{filterByMonthPlusOne}} Hours: {{filterByHour}} Min Bells: {{filterBy3}} </span>
+
+
+
+
         </div>
 
         <table class="table table-striped">
@@ -38,7 +82,9 @@
               <th class="stickyheader" @click="setSort('price')">price(-20%)
               </th>
               <th class="stickyheader" @click="setSort('size')">size</th>
-              <th class="stickyheader">shadow</th>
+              <th class="stickyheader" @click="setSort('isRare')">rare</th>
+              <th class="stickyheader" v-show="toggleShadows" @click="toggleShadows=!toggleShadows">shadow</th>
+              <th class="stickyheader" v-show="!toggleShadows" @click="toggleShadows=!toggleShadows">...</th>
 
             </tr>
           </thead>
@@ -49,8 +95,9 @@
             <td> {{ critter.location }}</td>
             <td> {{ critter.price }} ({{critter.price*0.80}})</td>
             <td>{{critter.size}} </td>
+            <td>{{critter.isRare}} </td>
 
-            <td> <img v-if="critter.type=='fish'"
+            <td> <img v-if="critter.type=='fish'&&toggleShadows"
                 :src="critter.size.replace(' ','__').replace('(','').replace(')','')+'.png'" style="max-height:100px">
             </td>
           </tr>
@@ -58,6 +105,55 @@
       </div>
 
     </div>
+
+    <div class="modal fade" id="moneyCalcModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-lg " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Big Money</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="" >Location</th>
+                  <th class="">High</th>
+                  <th class="" >
+                    Low</th>
+                  <th class="">Sizes
+                  </th>
+                  <th class="" >Avg $-Size</th>
+                  <th class="" >Sum $-Size</th>
+                  <th class="" >Count-Size</th>
+                  <th class="" >Names</th>
+                  <th class="">Avg $</th>
+                  <th class="">Wtd $</th>
+                </tr>
+              </thead>
+              <tr v-for="loc in moneyMaker">
+                <td>{{loc.location}}</td>
+                <td>{{loc.high}}</td>
+                <td>{{loc.low}}</td>
+                <td>{{JSON.stringify(loc.sizes)}}</td>
+                <td>{{JSON.stringify(Array.from(loc.averagePricePerSize.entries()))}}</td>
+                <td>{{JSON.stringify(Array.from(loc.sumPricePerSize.entries()))}}</td>
+                <td>{{JSON.stringify(Array.from(loc.countPerSize.entries()))}}</td>
+                <td>{{loc.names}}</td>
+                <td>{{loc.averagePrice}}</td>
+                <td>{{loc.weightedAveragePrice}}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
   </div>
 
@@ -71,32 +167,133 @@
       message: 'Hello Vue!',
       critters: [],
       filterBy: 'all',
+      filterBy2: 'all',
+      moneyMaker: [],
+      filterBy3: 0,
+      toggleShadows: true,
+      filterByMonth: [new Date().getMonth()],
+      filterByHour: [new Date().getHours()],
+
       currentSort: 'name',
+      tabSelected: 'list',
       asc: true
     },
     mounted: function () {
       this.critters = critterData.critters;
     },
     computed: {
+      filterByMonthPlusOne: function () {
+        var temp = [];
+        for (var i = 0; i < this.filterByMonth.length; i++) {
+          temp.push(this.filterByMonth[i] + 1)
+        }
+        return temp;
+      },
       tableSort: function () {
-        var tempTable = [];
-        if (this.filterBy == 'all') {
-          tempTable = this.critters;
-        }
-        for (var i = 0; i < this.critters.length; i++) {
-          if (this.critters[i].type === this.filterBy) {
-            tempTable.push(this.critters[i])
-          }
-        }
+        var tempTable = this.filterByType(this.critters, this.filterBy);
+
+        var tempTable2 = this.filterByRarity(tempTable, this.filterBy2);
+
+        var tempTable3 = this.filterByPrice(tempTable2, this.filterBy3)
+
+        var tempTable4 = this.filterByMonthCalc(tempTable3, this.filterByMonth)
+
+        var tempTable5 = this.filterByHoursCalc(tempTable4, this.filterByHour)
+
+        tempTable5 = this.sortBy(tempTable5)
+        return tempTable5;
+
+      },
+      filteredTableForCalc: function () {
+        var tempTable = this.filterByType(this.critters, this.filterBy);
+
         tempTable = this.sortBy(tempTable)
         return tempTable;
 
-      },
-      boxIt: function (base) {
-        return base * 0.80;
       }
     },
     methods: {
+      filterByMonthCalc: function (critts, months) {
+        var tempTable = [];
+        if (months.length === 0) {
+          return critts;
+        }
+
+        for (var i = 0; i < critts.length; i++) {
+          for (var j = 0; j < months.length; j++) {
+            if (critts[i].northern.includes(months[j])) {
+              tempTable.push(critts[i]);
+            }
+          }
+        }
+
+        return tempTable
+      },
+      filterByHoursCalc: function (critts, hours) {
+        var tempTable = [];
+        if (hours.length === 0) {
+          return critts;
+        }
+
+        for (var i = 0; i < critts.length; i++) {
+          for (var j = 0; j < hours.length; j++) {
+            if (critts[i].hours.includes(hours[j])) {
+              tempTable.push(critts[i]);
+            }
+          }
+        }
+
+        return tempTable
+      },
+
+      filterByType: function (critts, type) {
+        var tempTable = [];
+        if (type == 'all') {
+          return critts
+        }
+        for (var i = 0; i < critts.length; i++) {
+          if (critts[i].type === type) {
+            tempTable.push(critts[i])
+          }
+        }
+        return tempTable
+      },
+      filterByPrice: function (critts, price) {
+        var tempTable = [];
+
+        if (price === 0) {
+          return critts
+        }
+
+        for (var i = 0; i < critts.length; i++) {
+          if (critts[i].price >= price) {
+            tempTable.push(critts[i]);
+          }
+        }
+        return tempTable
+
+      },
+      filterByRarity: function (critts, rarity) {
+        var tempTable = [];
+        if (rarity === 'all') {
+          return critts;
+        }
+        else {
+          for (var i = 0; i < critts.length; i++) {
+            if (rarity === 'rare') {
+              if (critts[i].isRare) {
+                tempTable.push(critts[i])
+              }
+            }
+            else if (rarity === 'notRare') {
+              if (!critts[i].isRare) {
+                tempTable.push(critts[i])
+              }
+            }
+          }
+          return tempTable;
+        }
+      },
       openModal: function (id) {
         $('#' + id).modal('toggle')
 
@@ -112,7 +309,13 @@
       },
       calculateBestRightNow: function () {
         var d = new Date();
-        console.log(this.calculateBestLocation([d.getMonth()], [d.getHours()]));
+       this.moneyMaker= this.calculateBestLocation([d.getMonth()], [d.getHours()]);
+
+      },
+      calculateBestTimeFilter: function () {
+        var d = new Date();
+        this.moneyMaker = this.calculateBestLocation(this.filterByMonth, this.filterByHour);
+        console.log(this.moneyMaker)
 
       },
       sortBy(arr) {
@@ -126,14 +329,20 @@
         });
       },
       calculateBestLocation: function (months, hours) {
-        var duringValidMonths = Array.from(this.containsMonth(this.critters, months));
+        var duringValidMonths = Array.from(this.containsMonth(this.filteredTableForCalc, months));
         var duringValidHours = Array.from(this.containsHours(duringValidMonths, hours));
 
         var productiveOptions = this.calculateThatGoodShit(duringValidHours);
+        return productiveOptions;
       },
 
       containsMonth(full, subset) {
         var duringValidMonths = new Set();
+
+        if (subset.length === 0) {
+          return full;
+        }
+
         for (var i = 0; i < subset.length; i++) {
           var month = subset[i];
           for (var j = 0; j < full.length; j++) {
@@ -147,6 +356,9 @@
       containsHours(full, subset) {
 
         var duringValidHours = new Set();
+        if (subset.length === 0) {
+          return full;
+        }
 
         for (var i = 0; i < subset.length; i++) {
           var hour = subset[i];
@@ -231,6 +443,7 @@
           obj.averagePrice = sum / count;
           obj.weightedAveragePrice = weightedSum / count;
 
+          obj.sizes=Array.from(obj.sizes)
 
           for (let [size, sum] of obj.sumPricePerSize) {
             obj.averagePricePerSize.set(size, sum / obj.countPerSize.get(size))
@@ -240,7 +453,7 @@
 
         }
 
-        console.log(crunchedNumbers)
+        return crunchedNumbers
 
 
       }
@@ -282,6 +495,17 @@
   }
 
   td {
-    word-break: break-all;
+    word-break:normal;
   }
+
+ 
+
+body .modal-dialog { /* Width */
+padding-left: 15px;
+  min-width:100%;
+    max-width: 100%;
+    width: auto !important;
+    display: inline-block;
+}
+
 </style>

@@ -647,7 +647,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c3/NH-Icon-softshelledturtle.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -685,7 +685,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/24/NH-Icon-snappingturtle.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -1422,7 +1422,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/15/NH-Icon-char.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -1468,7 +1468,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Icon-goldentrout.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -1510,7 +1510,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7b/NH-Icon-stringfish.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -2266,6 +2266,7 @@ var critterData = new Vue({
               10,
               11
             ],
+            isRare:false,
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/55/NH-Icon-seahorse.png/revision/latest?cb=20200401003129"
           },
@@ -2318,6 +2319,7 @@ var critterData = new Vue({
               10,
               11
             ],
+            isRare:false,
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2f/NH-Icon-clownfish.png/revision/latest?cb=20200401003129"
           },
@@ -3446,7 +3448,7 @@ var critterData = new Vue({
             ],
             "type": "fish",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Icon-oceansunfish.png/revision/latest?cb=20200401003129",
-            "isRare": false
+            "isRare": true
           },
           {
             "hours": [
@@ -4402,6 +4404,7 @@ var critterData = new Vue({
               10,
               11
             ],
+            isRare:true,
             "type": "bugs",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e2/NH-Icon-rajahbrookesbirdwing.png/revision/latest?cb=20200401005428"
           },
@@ -4436,6 +4439,7 @@ var critterData = new Vue({
               10,
               11
             ],
+            isRare:true,
             "type": "bugs",
             "url": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b8/NH-Icon-queenalexandrasbirdwing.png/revision/latest?cb=20200401005429"
           },
