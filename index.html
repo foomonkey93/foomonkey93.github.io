@@ -119,16 +119,16 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th class="" >Location</th>
+                  <th class="">Location</th>
                   <th class="">High</th>
-                  <th class="" >
+                  <th class="">
                     Low</th>
                   <th class="">Sizes
                   </th>
-                  <th class="" >Avg $-Size</th>
-                  <th class="" >Sum $-Size</th>
-                  <th class="" >Count-Size</th>
-                  <th class="" >Names</th>
+                  <th class="">Avg $-Size</th>
+                  <th class="">Sum $-Size</th>
+                  <th class="">Count-Size</th>
+                  <th class="">Names</th>
                   <th class="">Avg $</th>
                   <th class="">Wtd $</th>
                 </tr>
@@ -309,7 +309,7 @@
       },
       calculateBestRightNow: function () {
         var d = new Date();
-       this.moneyMaker= this.calculateBestLocation([d.getMonth()], [d.getHours()]);
+        this.moneyMaker = this.calculateBestLocation([d.getMonth()], [d.getHours()]);
 
       },
       calculateBestTimeFilter: function () {
@@ -380,15 +380,31 @@
           validLocations.add(dataSet[i].location)
           var option = []
           if (locationOptions.get(dataSet[i].location) == undefined) {
-            option = [];
+            option = new Set();
           }
           else {
             option = locationOptions.get(dataSet[i].location);
           }
 
-          option.push(dataSet[i]);
+          option.add(dataSet[i]);
           locationOptions.set(dataSet[i].location, option)
         }
+
+
+        for (let [location, critters] of locationOptions) {
+          if (location.includes("(")) {
+            //add 
+            var tempLocation = location.replace(/ \(.*\)/, '')
+            if (locationOptions.get(tempLocation) != undefined) {
+              var entries=Array.from(locationOptions.get(tempLocation).entries());
+              for (var i = 0; i < entries.length; i++) {
+                critters.add(entries[i][1])
+              }
+            }
+          }
+          locationOptions.set(location, Array.from(critters))
+        }
+
         var crunchedNumbers = [];
         var crit;
         for (let [location, critters] of locationOptions) {
@@ -443,7 +459,7 @@
           obj.averagePrice = sum / count;
           obj.weightedAveragePrice = weightedSum / count;
 
-          obj.sizes=Array.from(obj.sizes)
+          obj.sizes = Array.from(obj.sizes)
 
           for (let [size, sum] of obj.sumPricePerSize) {
             obj.averagePricePerSize.set(size, sum / obj.countPerSize.get(size))
@@ -495,17 +511,17 @@
   }
 
   td {
-    word-break:normal;
+    word-break: normal;
   }
 
- 
 
-body .modal-dialog { /* Width */
-padding-left: 15px;
-  min-width:100%;
+
+  body .modal-dialog {
+    /* Width */
+    padding-left: 15px;
+    min-width: 100%;
     max-width: 100%;
     width: auto !important;
     display: inline-block;
-}
-
+  }
 </style>
