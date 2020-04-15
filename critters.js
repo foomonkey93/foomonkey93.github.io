@@ -1324,7 +1324,7 @@ var critterData = new Vue({
               ],
               "id": "cherrysalmon",
               "index": 26,
-              "location": "River (Clifftop) Pond",
+              "location": "River (Clifftop),Pond",
               "name": "Cherry salmon",
               "northern": [
                 2,
@@ -1371,7 +1371,7 @@ var critterData = new Vue({
               ],
               "id": "char",
               "index": 27,
-              "location": "River (Clifftop) Pond",
+              "location": "River (Clifftop),Pond",
               "name": "Char",
               "northern": [
                 2,
@@ -1418,7 +1418,7 @@ var critterData = new Vue({
               ],
               "id": "goldentrout",
               "index": 28,
-              "location": "River (Clifftop)",
+              "location": "River (Clifftop),Pond",
               "name": "Golden trout",
               "northern": [
                 2,
@@ -1463,7 +1463,7 @@ var critterData = new Vue({
               ],
               "id": "stringfish",
               "index": 29,
-              "location": "River (Clifftop)",
+              "location": "River (Clifftop),Pond",
               "name": "Stringfish",
               "northern": [
                 0,

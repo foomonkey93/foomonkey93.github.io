@@ -74,12 +74,13 @@
     },
     mounted: function () {
       this.critters = critterData.critters;
+      this.calculateBestLocation([3, 4], [16, 17, 18, 19, 20])
     },
     computed: {
       tableSort: function () {
         var tempTable = [];
         if (this.filterBy == 'all') {
-          tempTable=this.critters;
+          tempTable = this.critters;
         }
         for (var i = 0; i < this.critters.length; i++) {
           if (this.critters[i].type === this.filterBy) {
@@ -87,7 +88,6 @@
           }
         }
         tempTable = this.sortBy(tempTable)
-        console.log(tempTable)
         return tempTable;
 
       },
@@ -100,14 +100,14 @@
         $('#' + id).modal('toggle')
 
       },
-      setSort(field){
-        if(field===this.currentSort){
-          this.asc=!this.asc;
+      setSort(field) {
+        if (field === this.currentSort) {
+          this.asc = !this.asc;
         }
-        else{
-          asc=true;
+        else {
+          asc = true;
         }
-        this.currentSort=field;
+        this.currentSort = field;
       },
       sortBy(arr) {
         return arr.sort((a, b) => {
@@ -119,10 +119,129 @@
           return 0;
         });
       },
-    
+      calculateBestLocation: function (months, hours) {
+        var duringValidMonths = Array.from(this.containsMonth(this.critters, months));
+        var duringValidHours = Array.from(this.containsHours(duringValidMonths, hours));
+
+        var productiveOptions = this.calculateThatGoodShit(duringValidHours);
+      },
+
+      containsMonth(full, subset) {
+        var duringValidMonths = new Set();
+        for (var i = 0; i < subset.length; i++) {
+          var month = subset[i];
+          for (var j = 0; j < full.length; j++) {
+            if (full[j].northern.includes(month)) {
+              duringValidMonths.add(full[j]);
+            }
+          }
+        }
+        return duringValidMonths;
+      },
+      containsHours(full, subset) {
+
+        var duringValidHours = new Set();
+
+        for (var i = 0; i < subset.length; i++) {
+          var hour = subset[i];
+          for (var j = 0; j < full.length; j++) {
+            if (full[j].hours.includes(hour)) {
+
+              duringValidHours.add(full[j]);
+            }
+          }
+
+        }
+        return duringValidHours;
+      },
+      calculateThatGoodShit: function (dataSet) {
+        var validLocations = new Set();
+        var locationOptions = new Map();
+
+        for (var i = 0; i < dataSet.length; i++) {
+          validLocations.add(dataSet[i].location)
+          var option = []
+          if (locationOptions.get(dataSet[i].location) == undefined) {
+            option = [];
+          }
+          else {
+            option = locationOptions.get(dataSet[i].location);
+          }
+
+          option.push(dataSet[i]);
+          locationOptions.set(dataSet[i].location, option)
+        }
+        var crunchedNumbers = [];
+        var crit;
+        for (let [location, critters] of locationOptions) {
+          var obj = new LocationInformation();
+          obj.location=location;
+          var count = critters.length;
+          var sum = 0;
+          var sumPrice=0;
+          var sumCount=0;
+          for (var i = 0; i < critters.length; i++) {
+            crit = critters[i];
+            if (obj.high < crit.price) {
+              obj.high = crit.price;
+            }
+            if (obj.low > crit.price) {
+              obj.low = crit.price;
+            }
+            sum += crit.price;
+            if (crit.type == 'fish') {
+              obj.sizes.add = crit.size;
+
+              if(obj.sumPricePerSize.get(crit.size)!=undefined){
+                sumPrice=0;
+              }
+              else{
+                sumPrice=obj.sumPricePerSize.get(crit.size);
+              }
+              sumPrice+= crit.price;
+              obj.sumPricePerSize.set(crit.size,sumPrice)
+
+              if(obj.countPerSize.get(crit.size)!=undefined){
+                sumCount=0;
+              }
+              else{
+                sumCount=obj.countPerSize.get(crit.size);
+              }
+              sumCount++;
+              obj.countPerSize.set(crit.size,sumCount)
+            }
+          }
+          obj.averagePrice = sum / count;
+
+          for (let [size, sum] of obj.sumPricePerSize) {
+            obj.averagePricePerSize.set(size,sum/obj.countPerSize.get(size))
+          }
+
+          crunchedNumbers.push(obj);
+          
+        }
+
+        console.log(crunchedNumbers)
+
+
+      }
+
 
     }
   })
+  function LocationInformation() {
+    this.high = 0;
+    this.low = 30000;
+
+    this.sizes = new Set();
+    this.averagePricePerSize = new Map();
+    this.sumPricePerSize = new Map();
+    this.countPerSize = new Map();
+
+    this.location = '';
+    this.averagePrice = 0;
+  };
+
 </script>
 <style>
   .sticky {
