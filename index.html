@@ -15,92 +15,19 @@
     <div>
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link" href="#" @click="tabSelected='list'" :class="{active: tabSelected=='list'}">List</a>
+          <a class="nav-link" href="#" @click="tabSelected='list'" :class="{active: tabSelected=='zipsToLongLat'}">Zips to Long Lat</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" @click="tabSelected='money'" :class="{active: tabSelected=='money'}">Money
+          <a class="nav-link" href="#" @click="tabSelected='money'" :class="{active: tabSelected=='longLatsToDistance'}">Distance between long lats
             Making</a>
         </li>
       </ul>
-      <div class="w-100" v-show="tabSelected==='list'">
+      <div class="w-100" v-show="tabSelected==='zipsToLongLat'">
 
 
-        <div style="background-color: white;" class="sticky">
+        hello
 
-          <div class="btn-group btn-group-toggle sticky">
-            <button @click="filterBy='all'" class="btn btn-primary sticky"
-              :class="{active: filterBy=='all'}">Both!</button>
-            <button @click="filterBy='fish'" class="btn btn-primary sticky"
-              :class="{active: filterBy=='fish'}">Fish</button>
-            <button @click="filterBy='bugs'" class="btn btn-primary sticky"
-              :class="{active: filterBy=='bugs'}">Bugs</button>
-          </div>
-          <div class="btn-group btn-group-toggle sticky">
-            <button @click="filterBy2='all'" class="btn btn-primary sticky"
-              :class="{active: filterBy2=='all'}">All</button>
-            <button @click="filterBy2='rare'" class="btn btn-primary sticky"
-              :class="{active: filterBy2=='rare'}">Rare</button>
-            <button @click="filterBy2='notRare'" class="btn btn-primary sticky"
-              :class="{active: filterBy2=='notRare'}">Not
-              Rare</button>
-          </div>
-          <div class="btn-group btn-group-toggle sticky">
-            <button @click="filterByMonth=[];filterByHour=[]" class="btn btn-info sticky">All</button>
-            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[new Date().getHours()]"
-              class="btn btn-info sticky">Now</button>
-            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[new Date().getHours()+1]"
-              class="btn btn-info sticky">Hour+</button>
-            <button @click="filterByMonth=[new Date().getMonth()];filterByHour=[]"
-              class="btn btn-info sticky">Month</button>
-            <button @click="openModal('AdvancedDateTimeModal')" class="btn btn-info sticky">Advanced</button>
-          </div>
-
-          <div class="btn-group btn-group-toggle sticky">
-            <button @click="filterBy3=0" class="btn btn-info sticky">0+</button>
-
-            <button @click="filterBy3=1000" class="btn btn-info sticky">1k+</button>
-            <button @click="calculateBestTimeFilter(); openModal('moneyCalcModal')" class="btn btn-info sticky"
-              data-toggle="tooltip" title="Not including rarity">Show Me the Money</button>
-
-          </div>
-
-          <span class="sticky">Months: {{filterByMonthPlusOne}} Hours: {{filterByHour}} Min Bells: {{filterBy3}} </span>
-
-
-
-
-        </div>
-
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th class="stickyheader" @click="setSort('name')">name</th>
-              <th class="stickyheader">image</th>
-              <th class="stickyheader" @click="setSort('location')">
-                location</th>
-              <th class="stickyheader" @click="setSort('price')">price(-20%)
-              </th>
-              <th class="stickyheader" @click="setSort('size')">size</th>
-              <th class="stickyheader" @click="setSort('isRare')">rare</th>
-              <th class="stickyheader" v-show="toggleShadows" @click="toggleShadows=!toggleShadows">shadow</th>
-              <th class="stickyheader" v-show="!toggleShadows" @click="toggleShadows=!toggleShadows">...</th>
-
-            </tr>
-          </thead>
-          <tr v-for="critter in tableSort">
-
-            <td> {{ critter.name }}</td>
-            <td> <img :src="critter.url"></td>
-            <td> {{ critter.location }}</td>
-            <td> {{ critter.price }} ({{critter.price*0.80}})</td>
-            <td>{{critter.size}} </td>
-            <td>{{critter.isRare}} </td>
-
-            <td> <img v-if="critter.type=='fish'&&toggleShadows"
-                :src="critter.size.replace(' ','__').replace('(','').replace(')','')+'.png'" style="max-height:100px">
-            </td>
-          </tr>
-        </table>
+       
       </div>
 
     </div>
